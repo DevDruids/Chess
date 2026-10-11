@@ -5,23 +5,18 @@ const position = START_POSITION;
 let step = "w";
 
 function drawChessboard() {
+  chessboard.innerHTML = '';
+
   for (let row = 0; row < 8; row++) {
     for (let col = 0; col < 8; col++) {
 
       const square = document.createElement('div');
       square.classList.add('square');
 
-      square.addEventListener('click', () => {
-        const pieceColor = piece === piece.toUpperCase() ? 'w' : 'b';
-
-        if (pieceColor === step) {
-          document.querySelectorAll('.square.selected').forEach(el => el.classList.remove('selected'));
-          square.classList.toggle('selected');
-        }
-      })
-
       square.dataset.row = row;
       square.dataset.col = col;
+      const piece = position[row][col];
+      square.dataset.piece = piece;
 
       if ((row + col) % 2 === 0) {
         square.style.backgroundColor = '#fff';
@@ -29,23 +24,47 @@ function drawChessboard() {
         square.style.backgroundColor = '#000';
       }
 
-      const piece = position[row][col];
-
-      square.dataset.piece = piece;
-
       if (piece !== '.') {
         const img = document.createElement('img');
         img.src = pieces[piece];
         square.append(img);
       }
 
-      square.onclick = () => {
-        console.log(square.dataset.row, square.dataset.col, square.dataset.piece)
-      }
+      square.addEventListener('click', () => {
+        const selectedSquare = chessboard.querySelector('.square.selected');
+        const pieceColor = piece === piece.toUpperCase() ? 'w' : 'b';
+
+        if (selectedSquare) {
+          const fromRow = selectedSquare.dataset.row;
+          const fromCol = selectedSquare.dataset.col;
+          const movingPiece = position[fromRow][fromCol];
+
+          if (fromRow === row && fromCol === col) {
+            square.classList.remove('selected');
+          }
+
+          if (piece !== '.' && pieceColor === step) {
+            selectedSquare.classList.remove('selected');
+            square.classList.add('selected');
+            return;
+          }
+
+          position[row][col] = movingPiece;
+          position[fromRow][fromCol] = '.';
+
+          step = step === 'w' ? 'b' : 'w';
+
+          drawChessboard();
+        }
+
+        if (piece !== '.' && pieceColor === step) {
+          square.classList.add('selected');
+        }
+      });
 
       chessboard.append(square);
     }
   }
 }
 
-drawChessboard()
+drawChessboard();
