@@ -1,0 +1,46 @@
+.wrapper {
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 30px;
+}
+
+body {
+    background-color: #c7c7c7;
+}
+.chessboard {
+    --chessboard-w: 600px;
+    --chessboard-h: 600px;
+    width: var(--chessboard-w);
+    height: var(--chessboard-h);
+    border: 1px solid black;
+    display: grid;
+    grid-template-rows: repeat(8, 1fr);
+    grid-template-columns: repeat(8, 1fr);
+}
+.square {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.square.black {
+    background-color: #535050;
+}
+.square.selected {
+    z-index: 1;
+    outline: 10px solid rgb(87, 209, 87);
+}
+
+.square.possible {
+    z-index: 1;
+    box-shadow: inset 0 0 10px #0baa20;
+}
+
+.square:not([data-piece="."]) {
+    cursor: pointer;
+}
+
+.piece {
+    height: calc(var(--chessboard-h) / 8 * .75);
+}
